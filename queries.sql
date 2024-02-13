@@ -7,14 +7,14 @@ from customers c ;
 select
 concat_ws(' ', first_name,last_name) as name,
 count(sales_id) as operations,
-SUM(s.quantity*p.price) as income
+ROUND(SUM(s.quantity*p.price),4) as income
 from sales s  
 join products p 
 on s.product_id = p.product_id
 join employees e 
 on s.sales_person_id=e.employee_id
 group by concat_ws(' ', first_name,last_name)
-order by income
+order by income desc
 limit 10;
 
 
@@ -79,7 +79,7 @@ order by age_category;
 select 
 to_char(s.sale_date, 'YYYY-MM') as date,
 count(distinct c.customer_id)as total_customers,
-SUM(s.quantity*p.price) as income
+round(SUM(s.quantity*p.price),4) as income
 from customers c
 join sales s
 on c.customer_id = s.customer_id

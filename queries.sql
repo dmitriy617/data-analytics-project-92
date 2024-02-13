@@ -90,6 +90,7 @@ group by to_char(s.sale_date, 'YYYY-MM')
 
 
 /* запрос сортирует покупателей, первая покупка которых была в ходе акции(стоимость равна 0)
+with tab as(
 select 
 concat_ws(' ', c.first_name,c.last_name) as customer,
 min(s.sale_date) as sale_date,
@@ -103,8 +104,9 @@ join employees e
 on s.sales_person_id = e.employee_id 
 where p.price = 0
 group by concat_ws(' ', c.first_name,c.last_name), concat_ws(' ', e.first_name,e.last_name), c.customer_id
-order by c.customer_id;
-
+order by c.customer_id)
+select distinct on(customer) customer, sale_date, seller
+from tab;
 
  
 

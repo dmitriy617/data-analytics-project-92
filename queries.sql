@@ -92,9 +92,9 @@ group by 1
 /* запрос сортирует покупателей, первая покупка которых была в ходе акции(стоимость равна 0)
 with tab as(
 select 
-concat_ws(' ', c.first_name,c.last_name) as customer,
+c.first_name||' '||c.last_name as customer,
 min(s.sale_date) as sale_date,
-concat_ws(' ', e.first_name,e.last_name) as seller
+e.first_name||' '||e.last_name as seller
 from sales s
 join products p 
 on s.product_id = p.product_id
@@ -103,7 +103,7 @@ on s.customer_id = c.customer_id
 join employees e 
 on s.sales_person_id = e.employee_id 
 where p.price = 0
-group by concat_ws(' ', c.first_name,c.last_name), concat_ws(' ', e.first_name,e.last_name), c.customer_id
+group by 1, 3, c.customer_id
 order by c.customer_id)
 select distinct on(customer) customer, sale_date, seller
 from tab

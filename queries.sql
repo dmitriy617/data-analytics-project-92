@@ -5,7 +5,7 @@ from customers c ;
 
 /* запрос считает 10 продавцов с наибольшей выручкой
 select
-concat_ws(' ', first_name,last_name) as name,
+first_name||' '||last_name as name,
 count(sales_id) as operations,
 ROUND(SUM(s.quantity*p.price),0) as income
 from sales s  
@@ -13,31 +13,31 @@ join products p
 on s.product_id = p.product_id
 join employees e 
 on s.sales_person_id=e.employee_id
-group by concat_ws(' ', first_name,last_name)
-order by income desc
-limit 10;
+group by 1
+order by 3 desc
+limit 10;;
 
 
 /* запрос считает выручку и сортирует ее от меньшего к большему
 select
-concat_ws(' ', first_name,last_name) as name,
+first_name||' '||last_name as name,
 round(avg(s.quantity*p.price),0) as average_income
 from sales s  
 join products p 
 on s.product_id = p.product_id
 join employees e 
 on s.sales_person_id=e.employee_id
-group by concat_ws(' ', first_name,last_name)
+group by 1
 having round(avg(s.quantity*p.price),0) < (select avg(ss.quantity*pp.price)
 from sales ss
 join products pp
 on ss.product_id = pp.product_id)
-order by average_income;
+order by 2;
 
 
 /* запрос считает выручку и сортирует ее по каждому продавцу и дню недели
 select
-concat_ws(' ', e.first_name,e.last_name)as name,
+e.first_name||' '||e.last_name as name,
 case to_char(s.sale_date, 'id') 
 when '1' then 'monday'
 when '2' then 'tuesday'
@@ -53,8 +53,8 @@ join products p
 on s.product_id = p.product_id
 join employees e 
 on s.sales_person_id=e.employee_id
-group by concat_ws(' ', first_name,last_name), to_char(s.sale_date, 'id')
-order by to_char(s.sale_date, 'id'), name;
+group by 1, to_char(s.sale_date, 'id')
+order by to_char(s.sale_date, 'id'), 1;
 
 /* запрос считает количество покупателей по разным возрастным группам(16-25, 26-40, 40+)
 select
@@ -70,7 +70,7 @@ group by case
 	when age between 26 and 40 then '26-40'
 	when age >40 then '40+' 
 	end
-order by age_category;
+order by 1;;
 
 
 
@@ -85,7 +85,7 @@ join sales s
 on c.customer_id = s.customer_id
 join products p 
 on s.product_id = p.product_id 
-group by to_char(s.sale_date, 'YYYY-MM')
+group by 1
 ;
 
 
@@ -106,7 +106,8 @@ where p.price = 0
 group by concat_ws(' ', c.first_name,c.last_name), concat_ws(' ', e.first_name,e.last_name), c.customer_id
 order by c.customer_id)
 select distinct on(customer) customer, sale_date, seller
-from tab;
+from tab
+order by customer;
 
  
 
